@@ -6,7 +6,7 @@
 ###  Installation
 Clone repository:
 ```
-git clone github.com/SmonkeyMonkey/todo_rust
+git clone https://github.com/SmonkeyMonkey/todo_rust.git
 ```
 ### Usage
 Move to web_app dir:
