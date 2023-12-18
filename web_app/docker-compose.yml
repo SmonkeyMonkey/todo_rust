@@ -1,0 +1,46 @@
+version: "3.7"
+
+services:
+  server:
+    container_name: 'rust-server'
+    build: .
+    restart: always
+    environment:
+      - 'DB_URL=postgres://username:password@postgres:5432/to_do'
+      - 'SECRET_KEY=secret'
+      - 'EXPIRE_MINUTES=120'
+      - 'REDIS_URL=redis://redis:6379'
+    depends_on:
+      postgres:
+        condition: service_started
+    ports:
+      - '8080:8080'
+
+  postgres:
+    container_name: 'to-do-postgres'
+    image: 'postgres:11.2-alpine'
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      - 'POSTGRES_USER=username'
+      - 'POSTGRES_DB=to_do'
+      - 'POSTGRES_PASSWORD=password'
+  redis:
+    container_name: 'to-do-redis'
+    image: 'redis:5.0.5'
+    ports:
+      - "6379:6379"
+    expose:
+      - "6379"
+
+  migrations:
+    container_name: 'migrations'
+    build: 
+      context: ./database
+    environment:
+      - 'DB_URL=postgres://username:password@postgres:5432/to_do'
+    depends_on:
+      postgres:
+        condition: service_started
+    restart: on-failure
